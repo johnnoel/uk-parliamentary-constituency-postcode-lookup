@@ -63,7 +63,7 @@ export default {
         typescript({
             sourceMap: !production,
             inlineSources: !production,
-            tsconfig: 'tsconfig.fe.json',
+            tsconfig: 'src/fe/tsconfig.json',
         }),
 
         // In dev mode, call `npm run start` once
