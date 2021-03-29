@@ -1,30 +1,32 @@
 <script lang="ts">
-    export let name: string;
-</script>
+    let postcode: string;
+    let validationError: string|null = null;
+    const regex = /^([A-Z][A-HJ-Y]?[0-9][A-Z0-9]? ?[0-9][A-Z]{2}|GIR ?0A{2})$/i;
 
-<main>
-    <h1>Hello {name}!</h1>
-    <p>Visit the <a href="https://svelte.dev/tutorial">Svelte tutorial</a> to learn how to build Svelte apps.</p>
-</main>
+    const onPostcodeInput = (): void => {
+        validationError = null;
 
-<style>
-    main {
-        text-align: center;
-        padding: 1em;
-        max-width: 240px;
-        margin: 0 auto;
-    }
+        if (postcode.trim() === '') {
+            return;
+        }
 
-    h1 {
-        color: #ff3e00;
-        text-transform: uppercase;
-        font-size: 4em;
-        font-weight: 100;
-    }
+        if (postcode.match(regex) === null) {
+            validationError = 'Not a recognised postcode :(';
 
-    @media (min-width: 640px) {
-        main {
-            max-width: none;
+            return;
         }
     }
-</style>%
+</script>
+
+<form>
+    <fieldset>
+        <label for="postcode">Full UK postcode</label>
+        <input type="text" id="postcode" bind:value={postcode} on:input={onPostcodeInput}>
+        {#if validationError !== null}
+            <div class="toast toast-error">{validationError}</div>
+        {/if}
+    </fieldset>
+</form>
+
+<style>
+</style>

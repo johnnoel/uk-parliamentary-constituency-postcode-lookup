@@ -2,13 +2,53 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <!-- Looking for the code behind this project? Check out https://github.com/johnnoel/TODO -->
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Parliamentary Constituency Postcode Lookup</title>
+    <title>UK Parliamentary Constituency Postcode Lookup</title>
 
     <link rel="stylesheet" href="build/bundle.css">
     <script defer src="build/bundle.js"></script>
 </head>
 <body>
-<div id="app"></div>
+<header>
+    <div class="section section-hero">
+        <h1>UK Parliamentary Constituency Postcode Lookup</h1>
+        <p>Enter your full postcode below to find out what constituency you are in</p>
+    </div>
+</header>
+
+<main role="main">
+    <div id="app"></div>
+
+    <div class="section section-facts">
+        <div class="section-fact">
+            <h2>No external service</h2>
+            <p>Your postcode is <i>never</i> sent anywhere</p>
+        </div>
+        <div class="section-fact">
+            <h2>Uses regular expressions</h2>
+            <p>:shrug:</p>
+        </div>
+        <div class="section-fact">
+            <h2>Tech stack</h2>
+            <ul>
+                <li><a href="https://www.typescriptlang.org/" target="_blank" rel="noreferrer noopener">TypeScript</a></li>
+                <li><a href="https://www.postgresql.org/" target="_blank" rel="noreferrer noopener">PostgreSQL</a> / <a href="https://postgis.net/" target="_blank" rel="noreferrer noopener">PostGIS</a></li>
+                <li><a href="https://github.com/pemistahl/grex" target="_blank" rel="noreferrer noopener">Grex</a></li>
+                <li><a href="https://svelte.dev/" target="_blank" rel="noreferrer noopener">Svelte</a></li>
+                <li>Spectre.css</li>
+            </ul>
+        </div>
+    </div>
+</main>
+
+<footer class="section section-footer">
+    <ul>
+        <li><a href="https://github.com/johnnoel/TODO">GitHub</a></li>
+        <li><a href="https://twitter.com/ceetea_">Twitter</a></li>
+        <li>Version 0.0.1</li>
+    </ul>
+    <p>Designed and built by <a href="https://twitter.com/ceetea_">John Noel</a>. Licensed under the <a href="https://github.com/johnnoel/TODO/blob/LICENSE">MIT License</a></p>
+</footer>
 </body>
 </html>
