@@ -10,10 +10,6 @@ interface ConstituencyIdToRegex {
     [constituencyId: string]: string
 }
 
-interface Regexes {
-    [letter: string]: ConstituencyIdToRegex
-}
-
 const execPromise = promisify(exec);
 
 (async () => {
@@ -26,50 +22,43 @@ const execPromise = promisify(exec);
     });
 
     await db.connect();
-    const constituencies = await db.query('SELECT * FROM constituencies ORDER BY name ASC');
 
-    const regexes: Regexes = {};
-    const letters = [ 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z' ];
+    const letter = process.argv[2];
+    const constituencies = await db.query(
+        'SELECT DISTINCT constituency_id AS id FROM postcodes WHERE constituency_id IS NOT NULL AND substring(postcode FROM 1 FOR 1) = $1 ORDER BY id',
+        [ letter ]
+    );
 
-    for (const letter of letters) {
-        regexes[letter] = {};
+    if (constituencies.rows.length === 0) {
+        console.log('No constituencies found for ' + letter);
+        process.exit(0);
+        return;
     }
+
+    const output: ConstituencyIdToRegex = {};
 
     for (const constituency of constituencies.rows) {
-        console.log(constituency.name);
+        console.log(constituency.id);
+        const tmpFile = tmp.fileSync();
 
-        const res = await db.query('SELECT DISTINCT substring(postcode FROM 1 FOR 1) AS first_letter FROM postcodes WHERE constituency_id = $1', [
-            constituency.id,
-        ]);
+        const query = db.query(
+            new QueryStream(
+                'SELECT postcode FROM postcodes WHERE constituency_id = $1 AND substring(postcode FROM 1 FOR 1) = $2 ORDER BY postcode ASC',
+                [ constituency.id, letter ]
+            )
+        );
 
-        const firstLetters = res.rows.map(r => r.first_letter);
-
-        for (const firstLetter of firstLetters) {
-            const query = db.query(new QueryStream('SELECT postcode FROM postcodes WHERE constituency_id = $1 AND substring(postcode FROM 1 FOR 1) = $2 ORDER BY postcode ASC', [
-                constituency.id, firstLetter,
-            ]));
-
-            const tmpFile = tmp.fileSync();
-
-            for await (const row of query) {
-                //console.log(row.postcode);
-                writeFileSync(tmpFile.name, row.postcode + "\n", { flag: 'a' });
-            }
-
-            // execute grex on the temp file and retrieve the regex
-            const result = await execPromise('/home/johnnoel/Projects/grex/grex -f ' + tmpFile.name);
-            regexes[firstLetter][constituency.id] = result.stdout.trim();
+        for await (const row of query) {
+            writeFileSync(tmpFile.name, row.postcode + "\n", { flag: 'a' });
         }
+
+        const regex = await execPromise('/home/johnnoel/Projects/grex/grex -f ' + tmpFile.name);
+        output[constituency.id] = regex.stdout;
     }
 
-    for (const letter in regexes) {
-        // todo count regexes and if there aren't any continue
-
-        // write the regexes as a json file
-        const filename = resolve(__dirname, '..', 'public', 'build', letter + '.json');
-        console.log(filename);
-        writeFileSync(filename, JSON.stringify(regexes[letter]), { flag: 'w' });
-    }
+    const filename = resolve(__dirname, '..', 'public', 'build', letter + '.json');
+    console.log(filename);
+    writeFileSync(filename, JSON.stringify(output), { flag: 'w' });
 
     process.exit(0);
 })();
