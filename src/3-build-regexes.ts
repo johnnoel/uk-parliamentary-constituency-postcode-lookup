@@ -49,11 +49,11 @@ const execPromise = promisify(exec);
         );
 
         for await (const row of query) {
-            writeFileSync(tmpFile.name, row.postcode + "\n", { flag: 'a' });
+            writeFileSync(tmpFile.name, row.postcode.replace(' ', '') + "\n", { flag: 'a' });
         }
 
         const regex = await execPromise('/home/johnnoel/Projects/grex/grex -f ' + tmpFile.name);
-        output[constituency.id] = regex.stdout;
+        output[constituency.id] = regex.stdout.trim();
     }
 
     const filename = resolve(__dirname, '..', 'public', 'build', letter + '.json');
