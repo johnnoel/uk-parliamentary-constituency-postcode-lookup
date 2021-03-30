@@ -1,4 +1,4 @@
-import 'spectre.css/dist/spectre.min.css';
+import './app.scss';
 import App from './App.svelte';
 
 const container: HTMLElement|null = document.getElementById('app');

@@ -10,45 +10,72 @@
     <script defer src="build/bundle.js"></script>
 </head>
 <body>
-<header>
-    <div class="section section-hero">
-        <h1>UK Parliamentary Constituency Postcode Lookup</h1>
+<header class="hero bg-gray">
+    <div class="hero-body container grid-lg text-center">
+        <h1 class="text-bold h2">UK Parliamentary Constituency Postcode Lookup</h1>
         <p>Enter your full postcode below to find out what constituency you are in</p>
     </div>
 </header>
 
 <main role="main">
-    <div id="app"></div>
+    <div class="app-container bg-dark">
+        <div id="app" class="app container grid-lg text-center"></div>
+        <noscript>
+            <div class="toast toast-error">You'll need JavaScript enabled in order to use the postcode lookup</div>
+        </noscript>
+    </div>
 
-    <div class="section section-facts">
-        <div class="section-fact">
-            <h2>No external service</h2>
-            <p>Your postcode is <i>never</i> sent anywhere</p>
-        </div>
-        <div class="section-fact">
-            <h2>Uses regular expressions</h2>
-            <p>:shrug:</p>
-        </div>
-        <div class="section-fact">
-            <h2>Tech stack</h2>
-            <ul>
-                <li><a href="https://www.typescriptlang.org/" target="_blank" rel="noreferrer noopener">TypeScript</a></li>
-                <li><a href="https://www.postgresql.org/" target="_blank" rel="noreferrer noopener">PostgreSQL</a> / <a href="https://postgis.net/" target="_blank" rel="noreferrer noopener">PostGIS</a></li>
-                <li><a href="https://github.com/pemistahl/grex" target="_blank" rel="noreferrer noopener">Grex</a></li>
-                <li><a href="https://svelte.dev/" target="_blank" rel="noreferrer noopener">Svelte</a></li>
-                <li>Spectre.css</li>
-            </ul>
+    <div class="container grid-lg">
+        <div class="columns facts">
+            <div class="column">
+                <div class="card fact">
+                    <div class="card-header">
+                        <h2 class="card-title text-bold text-primary h5">No external service</h2>
+                    </div>
+                    <div class="card-body">
+                        Your postcode is <i>never</i> sent to this or any other site. Perfect if you're privacy conscious.
+                    </div>
+                </div>
+            </div>
+            <div class="column">
+                <div class="card fact">
+                    <div class="card-header">
+                        <h2 class="card-title text-bold text-primary h5">Uses regular expressions</h2>
+                    </div>
+                    <div class="card-body">
+                        Whether you consider this a good thing or not is up to you, it certainly made for <a href="https://github.com/johnnoel/TODO/blob/README.md">an interesting build</a>…
+                    </div>
+                </div>
+            </div>
+            <div class="column">
+                <div class="card fact">
+                    <div class="card-header">
+                        <h2 class="card-title text-bold text-primary h5">Tech stack</h2>
+                    </div>
+                    <div class="card-body">
+                        <ul>
+                            <li><a href="https://www.typescriptlang.org/" target="_blank" rel="noreferrer noopener">TypeScript</a></li>
+                            <li><a href="https://www.postgresql.org/" target="_blank" rel="noreferrer noopener">PostgreSQL</a> / <a href="https://postgis.net/" target="_blank" rel="noreferrer noopener">PostGIS</a></li>
+                            <li><a href="https://github.com/pemistahl/grex" target="_blank" rel="noreferrer noopener">Grex</a></li>
+                            <li><a href="https://svelte.dev/" target="_blank" rel="noreferrer noopener">Svelte</a></li>
+                            <li>Spectre.css</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </main>
 
-<footer class="section section-footer">
+<footer class="container grid-lg">
+    <div class="divider"></div>
+
     <ul>
         <li><a href="https://github.com/johnnoel/TODO">GitHub</a></li>
         <li><a href="https://twitter.com/ceetea_">Twitter</a></li>
         <li>Version 0.0.1</li>
     </ul>
-    <p>Designed and built by <a href="https://twitter.com/ceetea_">John Noel</a>. Licensed under the <a href="https://github.com/johnnoel/TODO/blob/LICENSE">MIT License</a></p>
+    <p>Designed and built by <a href="https://johnnoel.uk" target="_blank">John Noel</a>. Licensed under the <a href="https://github.com/johnnoel/TODO/blob/LICENSE">MIT License</a></p>
 </footer>
 </body>
 </html>

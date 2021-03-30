@@ -1,0 +1,14 @@
+@import '../../node_modules/spectre.css/src/spectre';
+
+.facts .fact {
+    height: 100%;
+}
+
+.app-container, .facts {
+    margin-bottom: 3rem;
+}
+
+.app {
+    padding-top: 3rem;
+    padding-bottom: 3rem;
+}
