@@ -1,7 +1,26 @@
-import { readdirSync, createReadStream } from 'fs';
+import { createReadStream } from 'fs';
 import path from 'path';
 import { Client } from 'pg';
 import parse from 'csv-parse';
+
+interface ConstituencyIdCache {
+    [constituencyId: string]: string|null;
+}
+
+const processBuffer = async (db: Client, buffer: any[]) => {
+    const values: string[] = [];
+    const params: string[] = [];
+
+    for (let i = 0; i < buffer.length; i++) {
+        values.push('($' + (i * 3 + 1) + ', $' + (i * 3 + 2) + ', $' + (i * 3 + 3) + ')');
+
+        params.push(buffer[i][0]);
+        params.push(buffer[i][1]);
+        params.push(buffer[i][2]);
+    }
+
+    await db.query('INSERT INTO postcodes VALUES ' + values.join(', ') + ' ON CONFLICT (postcode) DO NOTHING', params);
+}
 
 (async () => {
     const db = new Client({
@@ -16,10 +35,7 @@ import parse from 'csv-parse';
     await db.query('CREATE TABLE IF NOT EXISTS postcodes (postcode VARCHAR(16) PRIMARY KEY, location GEOGRAPHY(POINT, 4326) NOT NULL, constituency_id VARCHAR(9) NULL REFERENCES constituencies (id) ON DELETE RESTRICT)');
 
     const csvFiles = process.argv.slice(2).map(p => path.resolve(p));
-    //console.log(csvFiles);
-
-    //const csvPath = path.resolve(__dirname, '..', 'data', 'os-postcodes', 'Data', 'CSV');
-    //const csvFiles = readdirSync(csvPath);
+    const constituencyIdCache: ConstituencyIdCache = {};
 
     for (const csvFile of csvFiles) {
         process.stdout.write(csvFile + "\n");
@@ -29,28 +45,44 @@ import parse from 'csv-parse';
             skip_empty_lines: true,
         }));
 
+        let first = true;
+        let buffer: any = [];
+        const bufferSize = 25;
+
         for await (const record of parser) {
-            const postcode = record[0].replace(' ', '');
-            const easting = record[2];
-            const northing = record[3];
-
-            const geom = 'POINT(' + easting + ' ' + northing + ')';
-
-            const res = await db.query('SELECT id, name FROM constituencies WHERE ST_Contains(boundary::geometry, ST_Transform(ST_GeomFromText($1, $2), 4326))', [
-                geom, 27700,
-            ]);
-
-            const constituencyId = (res.rows.length > 0) ? res.rows[0].id : null;
-
-            if (res.rows.length > 1) {
-                console.log(postcode, easting, northing, res.rows);
+            if (first) { // header line
+                first = false;
+                continue;
             }
 
-            await db.query('INSERT INTO postcodes VALUES($1, ST_Transform(ST_GeomFromText($2, $3), 4326), $4) ON CONFLICT (postcode) DO NOTHING', [
-                postcode, geom, 27700, constituencyId,
-            ]);
+            const postcode = record[0].replace(' ', '');
+            const constituency = record[19];
+            const latitude = record[42];
+            const longitude = record[43];
 
-            process.stdout.write('.');
+            if (!(constituency in constituencyIdCache)) {
+                process.stdout.write('+');
+                const res = await db.query('SELECT id, name FROM constituencies WHERE id = $1', [
+                    constituency,
+                ]);
+
+                constituencyIdCache[constituency] = (res.rows.length > 0) ? res.rows[0].id : null;
+            }
+
+            const geom = 'POINT(' + longitude + ' ' + latitude + ')';
+
+            buffer.push([ postcode, geom, constituencyIdCache[constituency] ]);
+
+            if (buffer.length >= bufferSize) {
+                await processBuffer(db, buffer);
+                buffer = [];
+
+                process.stdout.write('.');
+            }
+
+            if (buffer.length > 0) {
+                await processBuffer(db, buffer);
+            }
         }
 
         process.stdout.write("\n");
