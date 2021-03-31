@@ -19,7 +19,7 @@
     const loaded: LoadedJson = {};
 
     const findConstituency = (postcode: string): void => {
-        const firstLetter = postcode.substr(0, 1).toUpperCase();
+        const firstLetter = postcode.substr(0, 1);
 
         if (!(firstLetter in loaded)) {
             return;
@@ -28,7 +28,7 @@
         // consider shifting this to a web worker if it's too heavy for devices
         const start = performance.now();
         for (const constituencyId in loaded[firstLetter]) {
-            if (postcode.replace(/\s+/i, '').toUpperCase().match(loaded[firstLetter][constituencyId]) !== null) {
+            if (postcode.match(loaded[firstLetter][constituencyId]) !== null) {
                 activeConstituency = constituencyId;
                 break;
             }
@@ -48,11 +48,13 @@
         activeConstituency = null;
         couldntFind = false;
 
-        if (postcode.trim() === '' || postcode.match(regex) === null) {
+        const strippedPostcode = postcode.trim().replace(/\s+/, '').toUpperCase();
+
+        if (strippedPostcode === '' || strippedPostcode.match(regex) === null) {
             return;
         }
 
-        const firstLetter = postcode.substr(0, 1).toUpperCase();
+        const firstLetter = strippedPostcode.substr(0, 1);
         loading = true;
 
         if (!(firstLetter in loaded)) {
@@ -65,12 +67,12 @@
                         loaded[firstLetter][constituencyId] = new RegExp(json[constituencyId]);
                     }
 
-                    findConstituency(postcode);
+                    findConstituency(strippedPostcode);
                 })
             ;
         }
 
-        findConstituency(postcode);
+        findConstituency(strippedPostcode);
     }, 200);
 </script>
 
