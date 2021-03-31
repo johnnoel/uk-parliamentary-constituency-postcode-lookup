@@ -13,7 +13,7 @@
         {:else if couldntFind}
             <div class="toast toast-error">
                 Couldn't find a constituency for your postcode!<br>
-                <small>If it's a real postcode and you're comfortable divulging it, please consider opening <a href="https://github.com/johnnoel/todo/issues">an issue</a> so it can be investigated.</small>
+                <small>If it's a real postcode and you're comfortable divulging it, please consider opening <a href="https://github.com/johnnoel/uk-parliamentary-constituency-postcode-lookup/issues">an issue</a> so it can be investigated.</small>
             </div>
         {:else if constituency !== null}
             <div class="toast toast-success">
