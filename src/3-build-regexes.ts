@@ -50,7 +50,7 @@ const execPromise = promisify(exec);
         );
 
         for await (const row of query) {
-            writeFileSync(tmpFile.name, row.postcode.replace(' ', '') + "\n", { flag: 'a' });
+            writeFileSync(tmpFile.name, row.postcode.replace(/\s+/i, '') + "\n", { flag: 'a' });
         }
 
         const regex = await execPromise(grexLocation + ' -f ' + tmpFile.name);

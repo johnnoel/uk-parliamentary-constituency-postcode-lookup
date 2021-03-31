@@ -21,6 +21,7 @@ You'll need NodeJS 14 or over (older versions may work), [Docker](https://www.do
 5. `node build/1-import-boundaries.js [KML file]` this will pull the boundaries out of the KML file and put them into PostgreSQL
 6. `node build/2-import-postcodes.js [CSV file]` this will pull the postcodes out of the CSV and put them into PostgreSQL
 7. `node build/3-build-regexes.js [A-Z]` this will generate the regexes for each constituency for each postcode first letter and put it in `public/data/[letter].json`, you'll likely need to update the `grexLocation` constant
+8. `node build/4-verify.js [JSON directory] [CSV file]` this will use the generated regexes to match each postcode from the CSV file and verify the constituency ID is correct
 8. `npm run build`
 9. Go to [http://localhost:2501/](localhost:2501) and try out some postcodes
 

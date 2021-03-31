@@ -55,7 +55,7 @@ const processBuffer = async (db: Client, buffer: any[]) => {
                 continue;
             }
 
-            const postcode = record[0].replace(' ', '');
+            const postcode = record[0].replace(/\s+/i, '');
             const constituency = record[19];
             const latitude = record[42];
             const longitude = record[43];

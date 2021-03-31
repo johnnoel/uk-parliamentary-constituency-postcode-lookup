@@ -56,7 +56,7 @@
         loading = true;
 
         if (!(firstLetter in loaded)) {
-            fetch('build/' + firstLetter + '.json')
+            fetch('data/' + firstLetter + '.json')
                 .then(resp => resp.json())
                 .then(json => {
                     loaded[firstLetter] = {};
