@@ -48,7 +48,9 @@ export default {
                 dev: !production
             }
         }),
-        scss(),
+        scss({
+            outputStyle: 'compressed',
+        }),
         // we'll extract any component CSS out into
         // a separate file - better for performance
         css({ output: 'bundle.css' }),
