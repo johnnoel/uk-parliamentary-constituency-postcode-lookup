@@ -28,7 +28,7 @@
         // consider shifting this to a web worker if it's too heavy for devices
         const start = performance.now();
         for (const constituencyId in loaded[firstLetter]) {
-            if (postcode.replace(' ', '').toUpperCase().match(loaded[firstLetter][constituencyId]) !== null) {
+            if (postcode.replace(/\s+/i, '').toUpperCase().match(loaded[firstLetter][constituencyId]) !== null) {
                 activeConstituency = constituencyId;
                 break;
             }
