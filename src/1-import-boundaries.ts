@@ -3,9 +3,6 @@ import { resolve } from 'path';
 import { Client } from 'pg';
 import XmlStream from 'xml-stream';
 
-//const FILENAME = 'Westminster_Parliamentary_Constituencies_(December_2019)_Boundaries_UK_BFC.kml';
-const FILENAME = 'Westminster_Parliamentary_Constituencies_(December_2018)_UK_BFC_V2.kml';
-
 (async () => {
     const db = new Client({
         host: 'localhost',
@@ -18,7 +15,8 @@ const FILENAME = 'Westminster_Parliamentary_Constituencies_(December_2018)_UK_BF
     await db.connect();
     await db.query('CREATE TABLE IF NOT EXISTS constituencies (id VARCHAR(9) PRIMARY KEY, name VARCHAR(255) NOT NULL, boundary GEOGRAPHY(MULTIPOLYGON, 4326) NOT NULL)');
 
-    const stream = createReadStream(resolve(__dirname, '..', 'data', FILENAME));
+    const kmlFile = resolve(process.argv[2]);
+    const stream = createReadStream(kmlFile);
     const xml = new XmlStream(stream);
 
     xml.collect('SimpleData');
@@ -63,5 +61,10 @@ const FILENAME = 'Westminster_Parliamentary_Constituencies_(December_2018)_UK_BF
         } catch (e) {
             console.log(e);
         }
+    });
+
+    xml.on('end', async () => {
+        await db.end();
+        process.exit(0);
     });
 })();

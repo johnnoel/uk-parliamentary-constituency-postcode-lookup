@@ -10,6 +10,7 @@ interface ConstituencyIdToRegex {
     [constituencyId: string]: string
 }
 
+const grexLocation = resolve(__dirname, '..', '..', 'grex', 'grex');
 const execPromise = promisify(exec);
 
 (async () => {
@@ -52,11 +53,11 @@ const execPromise = promisify(exec);
             writeFileSync(tmpFile.name, row.postcode.replace(' ', '') + "\n", { flag: 'a' });
         }
 
-        const regex = await execPromise('/home/johnnoel/Projects/grex/grex -f ' + tmpFile.name);
+        const regex = await execPromise(grexLocation + ' -f ' + tmpFile.name);
         output[constituency.id] = regex.stdout.trim();
     }
 
-    const filename = resolve(__dirname, '..', 'public', 'build', letter + '.json');
+    const filename = resolve(__dirname, '..', 'public', 'data', letter + '.json');
     console.log(filename);
     writeFileSync(filename, JSON.stringify(output), { flag: 'w' });
 

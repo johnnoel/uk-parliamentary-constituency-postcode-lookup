@@ -1,4 +1,18 @@
-@import '../../node_modules/spectre.css/src/spectre';
+//$primary-color: #D54000;
+//$dark-color: #444;
+
+// custom spectre includes, don't need everything
+@import '../../node_modules/spectre.css/src/variables';
+@import '../../node_modules/spectre.css/src/mixins';
+@import '../../node_modules/spectre.css/src/normalize';
+@import '../../node_modules/spectre.css/src/base';
+@import '../../node_modules/spectre.css/src/typography';
+@import '../../node_modules/spectre.css/src/forms';
+@import '../../node_modules/spectre.css/src/layout';
+@import '../../node_modules/spectre.css/src/hero';
+@import '../../node_modules/spectre.css/src/cards';
+@import '../../node_modules/spectre.css/src/toasts';
+@import '../../node_modules/spectre.css/src/utilities';
 
 .facts .fact {
     height: 100%;
